@@ -1,0 +1,7 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
+
+.welcome-container {
+  height: 100vh;
+  background: linear-gradient(135deg, #007bff 0%, #6f42c1 100%);
+  padding: 20px;
+}
