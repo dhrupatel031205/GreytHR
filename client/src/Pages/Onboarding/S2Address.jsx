@@ -1,4 +1,12 @@
 import React, { useState } from "react";
+import {
+  FaMapMarkerAlt,
+  FaHome,
+  FaBuilding,
+  FaCity,
+  FaGlobeAsia,
+  FaMapPin,
+} from "react-icons/fa";
 
 export default function S2Address({ formData, updateForm }) {
   const [postOffices, setPostOffices] = useState([]);
@@ -11,7 +19,6 @@ export default function S2Address({ formData, updateForm }) {
   const handlePincodeChange = async (e) => {
     const value = e.target.value;
 
-    // Allow only numbers, max 6 digits
     if (!/^\d{0,6}$/.test(value)) return;
 
     updateForm({ pincode: value });
@@ -41,7 +48,6 @@ export default function S2Address({ formData, updateForm }) {
         updateForm({ area: "", city: "", state: "" });
       }
     } else {
-      // Clear if less than 6 digits
       setPostOffices([]);
       updateForm({ area: "", city: "", state: "" });
     }
@@ -66,80 +72,98 @@ export default function S2Address({ formData, updateForm }) {
 
       <div className="row g-3">
         <div className="col-md-12">
-          <label>Current Address *</label>
-          <textarea
-            className="form-control"
-            name="currentAddress"
-            rows={2}
-            value={formData.currentAddress || ""}
-            onChange={handleChange}
-            required
-          />
+          <label className="form-label">Current Address *</label>
+          <div className="input-group">
+            <span className="input-group-text"><FaHome /></span>
+            <textarea
+              className="form-control"
+              name="currentAddress"
+              rows={2}
+              value={formData.currentAddress || ""}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
 
         <div className="col-md-12">
-          <label>Permanent Address *</label>
-          <textarea
-            className="form-control"
-            name="permanentAddress"
-            rows={2}
-            value={formData.permanentAddress || ""}
-            onChange={handleChange}
-            required
-          />
+          <label className="form-label">Permanent Address *</label>
+          <div className="input-group">
+            <span className="input-group-text"><FaBuilding /></span>
+            <textarea
+              className="form-control"
+              name="permanentAddress"
+              rows={2}
+              value={formData.permanentAddress || ""}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
 
         <div className="col-md-6">
-          <label>Pincode *</label>
-          <input
-            type="text"
-            className="form-control"
-            name="pincode"
-            placeholder="Enter 6-digit pincode"
-            value={formData.pincode || ""}
-            onChange={handlePincodeChange}
-            required
-          />
+          <label className="form-label">Pincode *</label>
+          <div className="input-group">
+            <span className="input-group-text"><FaMapPin /></span>
+            <input
+              type="text"
+              className="form-control"
+              name="pincode"
+              placeholder="Enter 6-digit pincode"
+              value={formData.pincode || ""}
+              onChange={handlePincodeChange}
+              required
+            />
+          </div>
         </div>
 
         <div className="col-md-6">
-          <label>Area (Post Office) *</label>
-          <select
-            className="form-select"
-            name="area"
-            value={formData.area || ""}
-            onChange={handleAreaChange}
-            required
-          >
-            <option value="">Select Area</option>
-            {postOffices.map((po, idx) => (
-              <option key={idx} value={po.Name}>
-                {po.Name}
-              </option>
-            ))}
-          </select>
+          <label className="form-label">Area (Post Office) *</label>
+          <div className="input-group">
+            <span className="input-group-text"><FaMapMarkerAlt /></span>
+            <select
+              className="form-select"
+              name="area"
+              value={formData.area || ""}
+              onChange={handleAreaChange}
+              required
+            >
+              <option value="">Select Area</option>
+              {postOffices.map((po, idx) => (
+                <option key={idx} value={po.Name}>
+                  {po.Name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="col-md-6">
-          <label>City *</label>
-          <input
-            type="text"
-            className="form-control"
-            name="city"
-            value={formData.city || ""}
-            readOnly
-          />
+          <label className="form-label">City *</label>
+          <div className="input-group">
+            <span className="input-group-text"><FaCity /></span>
+            <input
+              type="text"
+              className="form-control"
+              name="city"
+              value={formData.city || ""}
+              readOnly
+            />
+          </div>
         </div>
 
         <div className="col-md-6">
-          <label>State *</label>
-          <input
-            type="text"
-            className="form-control"
-            name="state"
-            value={formData.state || ""}
-            readOnly
-          />
+          <label className="form-label">State *</label>
+          <div className="input-group">
+            <span className="input-group-text"><FaGlobeAsia /></span>
+            <input
+              type="text"
+              className="form-control"
+              name="state"
+              value={formData.state || ""}
+              readOnly
+            />
+          </div>
         </div>
       </div>
     </>

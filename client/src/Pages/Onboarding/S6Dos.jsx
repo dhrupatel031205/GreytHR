@@ -1,16 +1,30 @@
-import React from 'react';
+import React from "react";
+import {
+  FaIdCard,
+  FaFileAlt,
+  FaPassport,
+  FaUniversity,
+  FaFileUpload,
+  FaUserGraduate,
+  FaFilePdf,
+} from "react-icons/fa";
 
-export default function S6Dos({ formData, updateForm }) {
+export default function S6Docs({ formData, updateForm }) {
   const handleFileChange = (e) => {
     updateForm({ [e.target.name]: e.target.files[0] });
   };
 
   return (
-    <>
-      <h4 className="mb-4">Step 6: Document Uploads</h4>
-      <div className="row">
-        <div className="col-md-6 mb-3">
-          <label>Aadhaar Card (PDF/JPG)</label>
+    <div className="card shadow-lg p-4 border-0 rounded-4">
+      <h4 className="mb-4 fw-bold text-primary text-center">
+        Step 6: Document Uploads
+      </h4>
+      <div className="row g-3">
+        <div className="col-md-6">
+          <label className="form-label">
+            <FaIdCard className="me-2" />
+            Aadhaar Card (PDF/JPG)
+          </label>
           <input
             type="file"
             accept=".pdf,.jpg,.jpeg,.png"
@@ -20,8 +34,11 @@ export default function S6Dos({ formData, updateForm }) {
           />
         </div>
 
-        <div className="col-md-6 mb-3">
-          <label>PAN Card (PDF/JPG)</label>
+        <div className="col-md-6">
+          <label className="form-label">
+            <FaFileAlt className="me-2" />
+            PAN Card (PDF/JPG)
+          </label>
           <input
             type="file"
             accept=".pdf,.jpg,.jpeg,.png"
@@ -31,8 +48,67 @@ export default function S6Dos({ formData, updateForm }) {
           />
         </div>
 
-        <div className="col-md-6 mb-3">
-          <label>Resume</label>
+        <div className="col-md-6">
+          <label className="form-label">
+            <FaPassport className="me-2" />
+            Passport (PDF/JPG)
+          </label>
+          <input
+            type="file"
+            accept=".pdf,.jpg,.jpeg,.png"
+            className="form-control"
+            name="passport"
+            onChange={handleFileChange}
+          />
+        </div>
+
+        <div className="col-md-6">
+          <label className="form-label">
+            <FaUniversity className="me-2" />
+            10th Marksheet (PDF/JPG)
+          </label>
+          <input
+            type="file"
+            accept=".pdf,.jpg,.jpeg,.png"
+            className="form-control"
+            name="tenthMarksheet"
+            onChange={handleFileChange}
+          />
+        </div>
+
+        <div className="col-md-6">
+          <label className="form-label">
+            <FaUniversity className="me-2" />
+            12th Marksheet (PDF/JPG)
+          </label>
+          <input
+            type="file"
+            accept=".pdf,.jpg,.jpeg,.png"
+            className="form-control"
+            name="twelfthMarksheet"
+            onChange={handleFileChange}
+          />
+        </div>
+
+        <div className="col-md-6">
+          <label className="form-label">
+            <FaUserGraduate className="me-2" />
+            Graduation Marksheet (PDF/JPG)
+          </label>
+          <input
+            type="file"
+            accept=".pdf,.jpg,.jpeg,.png"
+            className="form-control"
+            name="graduationMarksheet"
+            onChange={handleFileChange}
+          />
+        </div>
+
+        <div className="col-md-6">
+          <label className="form-label">
+            <FaFilePdf className="me-2" />
+            Resume
+          </label>
           <input
             type="file"
             accept=".pdf,.doc,.docx"
@@ -42,8 +118,11 @@ export default function S6Dos({ formData, updateForm }) {
           />
         </div>
 
-        <div className="col-md-6 mb-3">
-          <label>Offer Letter</label>
+        <div className="col-md-6">
+          <label className="form-label">
+            <FaFileUpload className="me-2" />
+            Offer Letter
+          </label>
           <input
             type="file"
             accept=".pdf,.doc,.docx"
@@ -53,6 +132,6 @@ export default function S6Dos({ formData, updateForm }) {
           />
         </div>
       </div>
-    </>
+    </div>
   );
 }

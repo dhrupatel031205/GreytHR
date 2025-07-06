@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
   FaUser,
-  FaEnvelope,
   FaPhone,
+  FaEnvelope,
   FaCalendar,
   FaBriefcase,
 } from "react-icons/fa";
@@ -30,14 +30,12 @@ export default function S3Family({ formData, updateForm }) {
 
   const validateField = (name, value) => {
     const newErrors = { ...errors };
-
     const phoneRegex = /^[6-9][0-9]{9}$/;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if (name.includes("Email")) {
       if (!value) newErrors[name] = "Email is required";
-      else if (!emailRegex.test(value))
-        newErrors[name] = "Enter a valid email";
+      else if (!emailRegex.test(value)) newErrors[name] = "Enter a valid email";
       else delete newErrors[name];
     }
 
@@ -80,20 +78,33 @@ export default function S3Family({ formData, updateForm }) {
 
   const renderMemberSection = (prefix, label) => (
     <div className="border rounded p-3 mb-4">
-      <h5 className="text-primary">{label} Details</h5>
+      <h5 className="text-primary">
+        <FaUser className="me-2" />
+        {label} Details
+      </h5>
       <div className="row g-3 mt-1">
         <div className="col-md-4">
           <label>First Name *</label>
-          <input
-            className={`form-control ${errors[`${prefix}FirstName`] ? "is-invalid" : ""}`}
-            name={`${prefix}FirstName`}
-            value={formData[`${prefix}FirstName`] || ""}
-            onChange={handleChange}
-          />
+          <div className="input-group">
+            <span className="input-group-text">
+              <FaUser />
+            </span>
+            <input
+              className={`form-control ${
+                errors[`${prefix}FirstName`] ? "is-invalid" : ""
+              }`}
+              name={`${prefix}FirstName`}
+              value={formData[`${prefix}FirstName`] || ""}
+              onChange={handleChange}
+            />
+          </div>
           {errors[`${prefix}FirstName`] && (
-            <div className="invalid-feedback">{errors[`${prefix}FirstName`]}</div>
+            <div className="invalid-feedback d-block">
+              {errors[`${prefix}FirstName`]}
+            </div>
           )}
         </div>
+
         <div className="col-md-4">
           <label>Middle Name</label>
           <input
@@ -103,30 +114,51 @@ export default function S3Family({ formData, updateForm }) {
             onChange={handleChange}
           />
         </div>
+
         <div className="col-md-4">
           <label>Last Name *</label>
-          <input
-            className={`form-control ${errors[`${prefix}LastName`] ? "is-invalid" : ""}`}
-            name={`${prefix}LastName`}
-            value={formData[`${prefix}LastName`] || ""}
-            onChange={handleChange}
-          />
+          <div className="input-group">
+            <span className="input-group-text">
+              <FaUser />
+            </span>
+            <input
+              className={`form-control ${
+                errors[`${prefix}LastName`] ? "is-invalid" : ""
+              }`}
+              name={`${prefix}LastName`}
+              value={formData[`${prefix}LastName`] || ""}
+              onChange={handleChange}
+            />
+          </div>
           {errors[`${prefix}LastName`] && (
-            <div className="invalid-feedback">{errors[`${prefix}LastName`]}</div>
+            <div className="invalid-feedback d-block">
+              {errors[`${prefix}LastName`]}
+            </div>
           )}
         </div>
+
         <div className="col-md-4">
           <label>Email *</label>
-          <input
-            className={`form-control ${errors[`${prefix}Email`] ? "is-invalid" : ""}`}
-            name={`${prefix}Email`}
-            value={formData[`${prefix}Email`] || ""}
-            onChange={handleChange}
-          />
+          <div className="input-group">
+            <span className="input-group-text">
+              <FaEnvelope />
+            </span>
+            <input
+              className={`form-control ${
+                errors[`${prefix}Email`] ? "is-invalid" : ""
+              }`}
+              name={`${prefix}Email`}
+              value={formData[`${prefix}Email`] || ""}
+              onChange={handleChange}
+            />
+          </div>
           {errors[`${prefix}Email`] && (
-            <div className="invalid-feedback">{errors[`${prefix}Email`]}</div>
+            <div className="invalid-feedback d-block">
+              {errors[`${prefix}Email`]}
+            </div>
           )}
         </div>
+
         <div className="col-md-4">
           <label>Phone Number *</label>
           <div className="input-group">
@@ -144,9 +176,14 @@ export default function S3Family({ formData, updateForm }) {
                 </option>
               ))}
             </select>
+            <span className="input-group-text">
+              <FaPhone />
+            </span>
             <input
               type="tel"
-              className={`form-control ${errors[`${prefix}Phone`] ? "is-invalid" : ""}`}
+              className={`form-control ${
+                errors[`${prefix}Phone`] ? "is-invalid" : ""
+              }`}
               name={`${prefix}Phone`}
               value={formData[`${prefix}Phone`] || ""}
               onChange={handleChange}
@@ -154,30 +191,48 @@ export default function S3Family({ formData, updateForm }) {
             />
           </div>
           {errors[`${prefix}Phone`] && (
-            <div className="invalid-feedback d-block">{errors[`${prefix}Phone`]}</div>
+            <div className="invalid-feedback d-block">
+              {errors[`${prefix}Phone`]}
+            </div>
           )}
         </div>
+
         <div className="col-md-4">
           <label>Date of Birth *</label>
-          <input
-            type="date"
-            className={`form-control ${errors[`${prefix}Dob`] ? "is-invalid" : ""}`}
-            name={`${prefix}Dob`}
-            value={formData[`${prefix}Dob`] || ""}
-            onChange={handleChange}
-          />
+          <div className="input-group">
+            <span className="input-group-text">
+              <FaCalendar />
+            </span>
+            <input
+              type="date"
+              className={`form-control ${
+                errors[`${prefix}Dob`] ? "is-invalid" : ""
+              }`}
+              name={`${prefix}Dob`}
+              value={formData[`${prefix}Dob`] || ""}
+              onChange={handleChange}
+            />
+          </div>
           {errors[`${prefix}Dob`] && (
-            <div className="invalid-feedback">{errors[`${prefix}Dob`]}</div>
+            <div className="invalid-feedback d-block">
+              {errors[`${prefix}Dob`]}
+            </div>
           )}
         </div>
+
         <div className="col-md-6">
           <label>Occupation</label>
-          <input
-            className="form-control"
-            name={`${prefix}Occupation`}
-            value={formData[`${prefix}Occupation`] || ""}
-            onChange={handleChange}
-          />
+          <div className="input-group">
+            <span className="input-group-text">
+              <FaBriefcase />
+            </span>
+            <input
+              className="form-control"
+              name={`${prefix}Occupation`}
+              value={formData[`${prefix}Occupation`] || ""}
+              onChange={handleChange}
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -194,26 +249,24 @@ export default function S3Family({ formData, updateForm }) {
           type="checkbox"
           className="form-check-input"
           checked={formData.isFatherAvailable !== false}
-          onChange={(e) =>
-            updateForm({ isFatherAvailable: e.target.checked })
-          }
+          onChange={(e) => updateForm({ isFatherAvailable: e.target.checked })}
         />
         <label className="form-check-label">Is Father Available?</label>
       </div>
-      {formData.isFatherAvailable !== false && renderMemberSection("father", "Father")}
+      {formData.isFatherAvailable !== false &&
+        renderMemberSection("father", "Father")}
 
       <div className="mb-3 form-check form-switch">
         <input
           type="checkbox"
           className="form-check-input"
           checked={formData.isMotherAvailable !== false}
-          onChange={(e) =>
-            updateForm({ isMotherAvailable: e.target.checked })
-          }
+          onChange={(e) => updateForm({ isMotherAvailable: e.target.checked })}
         />
         <label className="form-check-label">Is Mother Available?</label>
       </div>
-      {formData.isMotherAvailable !== false && renderMemberSection("mother", "Mother")}
+      {formData.isMotherAvailable !== false &&
+        renderMemberSection("mother", "Mother")}
 
       <div className="mb-4">
         <label>Marital Status</label>
@@ -264,6 +317,9 @@ export default function S3Family({ formData, updateForm }) {
           <div className="col-md-6">
             <label>Phone Number *</label>
             <div className="input-group">
+              <span className="input-group-text">
+                <FaPhone />
+              </span>
               <select
                 className="form-select"
                 name="emergencyCode"
@@ -280,14 +336,18 @@ export default function S3Family({ formData, updateForm }) {
               </select>
               <input
                 type="tel"
-                className={`form-control ${errors.emergencyPhone ? "is-invalid" : ""}`}
+                className={`form-control ${
+                  errors.emergencyPhone ? "is-invalid" : ""
+                }`}
                 name="emergencyPhone"
                 value={formData.emergencyPhone || ""}
                 onChange={handleChange}
               />
             </div>
             {errors.emergencyPhone && (
-              <div className="invalid-feedback d-block">{errors.emergencyPhone}</div>
+              <div className="invalid-feedback d-block">
+                {errors.emergencyPhone}
+              </div>
             )}
           </div>
         </div>
