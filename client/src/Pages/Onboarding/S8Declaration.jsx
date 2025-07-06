@@ -1,10 +1,9 @@
-import React, { useState, useRef } from 'react';
-import SignatureCanvas from 'react-signature-canvas';
-import { FaPenFancy } from 'react-icons/fa';
+import React, { useState } from "react";
+import { FaPenFancy } from "react-icons/fa";
+import axios from "axios";
 
 export default function S8Declaration({ formData, updateForm }) {
   const [accepted, setAccepted] = useState(false);
-  const sigCanvasRef = useRef();
 
   const handleCheckbox = (e) => {
     setAccepted(e.target.checked);
@@ -15,34 +14,31 @@ export default function S8Declaration({ formData, updateForm }) {
     updateForm({ [e.target.name]: e.target.value });
   };
 
-  const handleClear = () => {
-    sigCanvasRef.current.clear();
-    updateForm({ drawnSignature: "" });
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!accepted) {
-      alert("Please accept the policies to continue.");
-      return;
+    const dataToSend = {
+      personal: formData.personal,
+      address: formData.address,
+      family: formData.family,
+      job: formData.job,
+      education: formData.education,
+      documents: formData.documents,
+      bank: formData.bank,
+      declaration: {
+        signature: formData.signature,
+        drawnSignature: "", // Removed drawn signature logic
+        acceptedPolicies: formData.acceptedPolicies,
+      },
+    };
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/onboarding", dataToSend);
+      alert("✅ Onboarding submitted successfully!");
+    } catch (err) {
+      console.error(err);
+      alert("❌ Submission failed");
     }
-
-    if (!formData.signature) {
-      alert("Please enter your full name as e-signature.");
-      return;
-    }
-
-    const drawnSignatureData = sigCanvasRef.current.getTrimmedCanvas().toDataURL('image/png');
-    updateForm({ drawnSignature: drawnSignatureData });
-
-    console.log("✅ Final Submission Data:", {
-      ...formData,
-      drawnSignature: drawnSignatureData,
-    });
-
-    alert("🎉 Onboarding completed successfully!");
-    // Redirect or backend call here
   };
 
   return (
@@ -54,8 +50,7 @@ export default function S8Declaration({ formData, updateForm }) {
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <p className="text-muted">
-            I hereby declare that the information provided above is true and correct to the best of my knowledge.
-            I accept and agree to follow the company's policies and terms.
+            I hereby declare that the information provided above is true and correct to the best of my knowledge. I accept and agree to follow the company's policies and terms.
           </p>
         </div>
 
@@ -66,6 +61,7 @@ export default function S8Declaration({ formData, updateForm }) {
             id="policyCheck"
             checked={accepted}
             onChange={handleCheckbox}
+            required
           />
           <label className="form-check-label" htmlFor="policyCheck">
             I accept the company policies.
@@ -75,38 +71,18 @@ export default function S8Declaration({ formData, updateForm }) {
         <div className="mb-4">
           <label className="form-label">Type Full Name as E-signature *</label>
           <div className="input-group">
-            <span className="input-group-text"><FaPenFancy /></span>
+            <span className="input-group-text">
+              <FaPenFancy />
+            </span>
             <input
               type="text"
               className="form-control"
               name="signature"
-              value={formData.signature || ''}
+              value={formData.signature || ""}
               onChange={handleChange}
               placeholder="Enter your full name"
               required
             />
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <label className="form-label">Or Draw Signature</label>
-          <div className="border rounded-3 p-2 bg-light" style={{ maxWidth: "320px" }}>
-            <SignatureCanvas
-              penColor="black"
-              canvasProps={{
-                width: 300,
-                height: 80,
-                className: "sigCanvas w-100 border rounded"
-              }}
-              ref={sigCanvasRef}
-            />
-            <button
-              type="button"
-              className="btn btn-sm btn-outline-danger mt-2"
-              onClick={handleClear}
-            >
-              Clear Signature
-            </button>
           </div>
         </div>
 

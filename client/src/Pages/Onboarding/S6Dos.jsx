@@ -10,8 +10,18 @@ import {
 } from "react-icons/fa";
 
 export default function S6Docs({ formData, updateForm }) {
+  // Convert file to Base64 string and update form
   const handleFileChange = (e) => {
-    updateForm({ [e.target.name]: e.target.files[0] });
+    const file = e.target.files[0];
+    const name = e.target.name;
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updateForm({ [name]: reader.result }); // Base64 string
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -20,6 +30,7 @@ export default function S6Docs({ formData, updateForm }) {
         Step 6: Document Uploads
       </h4>
       <div className="row g-3">
+        {/* Aadhaar */}
         <div className="col-md-6">
           <label className="form-label">
             <FaIdCard className="me-2" />
@@ -34,6 +45,7 @@ export default function S6Docs({ formData, updateForm }) {
           />
         </div>
 
+        {/* PAN */}
         <div className="col-md-6">
           <label className="form-label">
             <FaFileAlt className="me-2" />
@@ -48,6 +60,7 @@ export default function S6Docs({ formData, updateForm }) {
           />
         </div>
 
+        {/* Passport */}
         <div className="col-md-6">
           <label className="form-label">
             <FaPassport className="me-2" />
@@ -62,6 +75,7 @@ export default function S6Docs({ formData, updateForm }) {
           />
         </div>
 
+        {/* 10th */}
         <div className="col-md-6">
           <label className="form-label">
             <FaUniversity className="me-2" />
@@ -76,6 +90,7 @@ export default function S6Docs({ formData, updateForm }) {
           />
         </div>
 
+        {/* 12th */}
         <div className="col-md-6">
           <label className="form-label">
             <FaUniversity className="me-2" />
@@ -90,6 +105,7 @@ export default function S6Docs({ formData, updateForm }) {
           />
         </div>
 
+        {/* Graduation */}
         <div className="col-md-6">
           <label className="form-label">
             <FaUserGraduate className="me-2" />
@@ -104,6 +120,7 @@ export default function S6Docs({ formData, updateForm }) {
           />
         </div>
 
+        {/* Resume */}
         <div className="col-md-6">
           <label className="form-label">
             <FaFilePdf className="me-2" />
@@ -118,6 +135,7 @@ export default function S6Docs({ formData, updateForm }) {
           />
         </div>
 
+        {/* Offer Letter */}
         <div className="col-md-6">
           <label className="form-label">
             <FaFileUpload className="me-2" />
