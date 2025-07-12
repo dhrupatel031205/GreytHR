@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
+import axios from 'axios';
 
 interface User {
-  id: string;
+  _id: string; // ✅ Use _id to match MongoDB ObjectId
   name: string;
   email: string;
   role: 'admin' | 'hr' | 'employee';
@@ -61,63 +62,52 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Mock users
-  const mockUsers: { [key: string]: User } = {
-    'admin@greyhr.com': {
-      id: '1',
-      name: 'Admin User',
-      email: 'admin@greyhr.com',
-      role: 'admin',
-      department: 'Administration',
-    },
-    'hr@greyhr.com': {
-      id: '2',
-      name: 'HR Manager',
-      email: 'hr@greyhr.com',
-      role: 'hr',
-      department: 'Human Resources',
-    },
-    'employee@greyhr.com': {
-      id: '3',
-      name: 'John Doe',
-      email: 'employee@greyhr.com',
-      role: 'employee',
-      department: 'Engineering',
-    },
-  };
+ const login = async (email: string, password: string): Promise<boolean> => {
+  dispatch({ type: 'SET_LOADING', payload: true });
 
-  const login = async (email: string, password: string): Promise<boolean> => {
-    dispatch({ type: 'SET_LOADING', payload: true });
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    if (mockUsers[email] && password === 'password') {
-      const user = mockUsers[email];
-      localStorage.setItem('token', 'mock-jwt-token');
-      localStorage.setItem('user', JSON.stringify(user));
-      dispatch({ type: 'LOGIN_SUCCESS', payload: user });
-      return true;
-    }
-    
+  try {
+    const res = await axios.post('http://localhost:3000/api/auth/login', { email, password });
+    const { token, user } = res.data;
+
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('userId', user._id);
+
+    dispatch({ type: 'LOGIN_SUCCESS', payload: user });
+    return true;
+  } catch (error: any) {
     dispatch({ type: 'SET_LOADING', payload: false });
+
+    // 💥 Show backend error message
+    if (error.response) {
+      console.error('Login failed:', error.response.data.message || error.response.data);
+      alert(`Login failed: ${error.response.data.message || 'Check credentials'}`);
+    } else if (error.request) {
+      console.error('No response from server');
+      alert('No response from server. Check if backend is running.');
+    } else {
+      console.error('Error setting up request:', error.message);
+      alert(`Error: ${error.message}`);
+    }
+
     return false;
-  };
+  }
+};
 
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('userId');
     dispatch({ type: 'LOGOUT' });
   };
 
-  // Check for existing session on mount
-  React.useEffect(() => {
+  useEffect(() => {
     const token = localStorage.getItem('token');
     const userStr = localStorage.getItem('user');
-    
+
     if (token && userStr) {
       try {
-        const user = JSON.parse(userStr);
+        const user: User = JSON.parse(userStr);
         dispatch({ type: 'LOGIN_SUCCESS', payload: user });
       } catch (error) {
         logout();
