@@ -65,13 +65,22 @@ const getEmployeeById = async (req, res) => {
 exports.getEmployeeById = getEmployeeById;
 const getEmployeeByUserId = async (req, res) => {
     try {
-        const employee = await Employee_1.default.findOne({ userId: req.params.userId });
+        const { userId } = req.params;
+        // First try to find by userId (for backward compatibility)
+        let employee = await Employee_1.default.findOne({ userId });
+        // If not found by userId, try to find by email (for user switcher)
+        if (!employee) {
+            const user = await User_1.default.findOne({ email: userId });
+            if (user) {
+                employee = await Employee_1.default.findOne({ userId: user._id });
+            }
+        }
         if (!employee) {
             return res.status(404).json({ message: 'Employee not found' });
         }
         res.json({
             success: true,
-            data: employee
+            employee: employee
         });
     }
     catch (error) {

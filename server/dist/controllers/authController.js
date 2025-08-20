@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changePassword = exports.updateProfile = exports.getProfile = exports.login = exports.register = void 0;
+exports.changePassword = exports.updateProfile = exports.getProfile = exports.getAvailableUsers = exports.getUserById = exports.login = exports.register = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const jwt_1 = require("../utils/jwt");
 const register = async (req, res) => {
@@ -85,6 +85,74 @@ const login = async (req, res) => {
     }
 };
 exports.login = login;
+// New endpoint for user switcher - returns user data by ID
+const getUserById = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        // Map frontend user IDs to actual database user IDs
+        const userMapping = {
+            'admin-user': 'admin@greyhr.com',
+            'hr-user': 'hr@greyhr.com',
+            'employee-user': 'employee@greyhr.com',
+            'jane-user': 'jane.smith@greyhr.com',
+            'mike-user': 'mike.johnson@greyhr.com'
+        };
+        const email = userMapping[userId];
+        if (!email) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const user = await User_1.default.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json({
+            success: true,
+            user: {
+                _id: userId, // Return the frontend ID
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                department: user.department,
+                avatar: user.avatar
+            }
+        });
+    }
+    catch (error) {
+        console.error('Get user by ID error:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+};
+exports.getUserById = getUserById;
+// Get all available users for switcher
+const getAvailableUsers = async (req, res) => {
+    try {
+        const users = await User_1.default.find({ isActive: true }).select('name email role department');
+        // Map to frontend format
+        const userMapping = {
+            'admin@greyhr.com': 'admin-user',
+            'hr@greyhr.com': 'hr-user',
+            'employee@greyhr.com': 'employee-user',
+            'jane.smith@greyhr.com': 'jane-user',
+            'mike.johnson@greyhr.com': 'mike-user'
+        };
+        const mappedUsers = users.map(user => ({
+            _id: userMapping[user.email] || user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            department: user.department
+        }));
+        res.json({
+            success: true,
+            users: mappedUsers
+        });
+    }
+    catch (error) {
+        console.error('Get available users error:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+};
+exports.getAvailableUsers = getAvailableUsers;
 const getProfile = async (req, res) => {
     try {
         const user = await User_1.default.findById(req.user._id);

@@ -10,6 +10,7 @@ export interface IUser extends Document {
     isActive: boolean;
     createdAt: Date;
     updatedAt: Date;
+    comparePassword(candidatePassword: string): Promise<boolean>;
 }
 export interface IEmployee extends Document {
     _id: string;

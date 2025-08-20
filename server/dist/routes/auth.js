@@ -10,6 +10,8 @@ const router = express_1.default.Router();
 // Public routes
 router.post('/register', authController_1.register);
 router.post('/login', authController_1.login);
+router.get('/users', authController_1.getAvailableUsers); // Get all available users for switcher
+router.get('/user/:userId', authController_1.getUserById); // Get specific user by ID
 // Protected routes
 router.get('/profile', auth_1.authenticate, authController_1.getProfile);
 router.put('/profile', auth_1.authenticate, authController_1.updateProfile);

@@ -6,7 +6,6 @@ import { AuthProvider } from './contexts/AuthContext';
 import { EmployeeProvider } from './contexts/EmployeeContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import Layout from './components/Layout/Layout';
-import Login from './pages/Auth/Login';
 import Dashboard from './pages/Dashboard/Dashboard';
 import EmployeeManagement from './pages/Employee/EmployeeManagement';
 import AttendanceTracking from './pages/Attendance/AttendanceTracking';
@@ -18,7 +17,6 @@ import Reports from './pages/Reports/Reports';
 import Chat from './pages/Chat/Chat';
 import Onboarding from './pages/Onboarding/Onboarding';
 import Profile from './pages/Profile/Profile';
-import ProtectedRoute from './components/Auth/ProtectedRoute';
 
 function App() {
   return (
@@ -28,28 +26,25 @@ function App() {
           <Router>
             <div className="App">
               <Routes>
-                <Route path="/login" element={<Login />} />
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 <Route
                   path="/*"
                   element={
-                    <ProtectedRoute>
-                      <Layout>
-                        <Routes>
-                          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                          <Route path="/dashboard" element={<Dashboard />} />
-                          <Route path="/employees" element={<EmployeeManagement />} />
-                          <Route path="/attendance" element={<AttendanceTracking />} />
-                          <Route path="/leaves" element={<LeaveManagement />} />
-                          <Route path="/payroll" element={<PayrollSystem />} />
-                          <Route path="/tasks" element={<TaskManagement />} />
-                          <Route path="/announcements" element={<Announcements />} />
-                          <Route path="/reports" element={<Reports />} />
-                          <Route path="/chat" element={<Chat />} />
-                          <Route path="/onboarding" element={<Onboarding />} />
-                          <Route path="/profile" element={<Profile />} />
-                        </Routes>
-                      </Layout>
-                    </ProtectedRoute>
+                    <Layout>
+                      <Routes>
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/employees" element={<EmployeeManagement />} />
+                        <Route path="/attendance" element={<AttendanceTracking />} />
+                        <Route path="/leaves" element={<LeaveManagement />} />
+                        <Route path="/payroll" element={<PayrollSystem />} />
+                        <Route path="/tasks" element={<TaskManagement />} />
+                        <Route path="/announcements" element={<Announcements />} />
+                        <Route path="/reports" element={<Reports />} />
+                        <Route path="/chat" element={<Chat />} />
+                        <Route path="/onboarding" element={<Onboarding />} />
+                        <Route path="/profile" element={<Profile />} />
+                      </Routes>
+                    </Layout>
                   }
                 />
               </Routes>

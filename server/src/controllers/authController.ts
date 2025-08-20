@@ -95,6 +95,79 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+// New endpoint for user switcher - returns user data by ID
+export const getUserById = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    // Map frontend user IDs to actual database user IDs
+    const userMapping: { [key: string]: string } = {
+      'admin-user': 'admin@greyhr.com',
+      'hr-user': 'hr@greyhr.com',
+      'employee-user': 'employee@greyhr.com',
+      'jane-user': 'jane.smith@greyhr.com',
+      'mike-user': 'mike.johnson@greyhr.com'
+    };
+
+    const email = userMapping[userId];
+    if (!email) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({
+      success: true,
+      user: {
+        _id: userId, // Return the frontend ID
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        department: user.department,
+        avatar: user.avatar
+      }
+    });
+  } catch (error: any) {
+    console.error('Get user by ID error:', error);
+    res.status(500).json({ message: 'Internal server error', error: error.message });
+  }
+};
+
+// Get all available users for switcher
+export const getAvailableUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await User.find({ isActive: true }).select('name email role department');
+    
+    // Map to frontend format
+    const userMapping: { [key: string]: string } = {
+      'admin@greyhr.com': 'admin-user',
+      'hr@greyhr.com': 'hr-user',
+      'employee@greyhr.com': 'employee-user',
+      'jane.smith@greyhr.com': 'jane-user',
+      'mike.johnson@greyhr.com': 'mike-user'
+    };
+
+    const mappedUsers = users.map(user => ({
+      _id: userMapping[user.email] || user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      department: user.department
+    }));
+
+    res.json({
+      success: true,
+      users: mappedUsers
+    });
+  } catch (error: any) {
+    console.error('Get available users error:', error);
+    res.status(500).json({ message: 'Internal server error', error: error.message });
+  }
+};
+
 export const getProfile = async (req: AuthRequest, res: Response) => {
   try {
     const user = await User.findById(req.user._id);
