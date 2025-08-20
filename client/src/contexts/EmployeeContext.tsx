@@ -105,32 +105,52 @@ export const EmployeeProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [state, dispatch] = useReducer(employeeReducer, initialState);
-  const { user } = useAuth(); // ✅ Getting logged-in user from AuthContext
+  const { state: authState } = useAuth(); // Getting logged-in user from AuthContext
 
   useEffect(() => {
     const fetchEmployeeByUserId = async () => {
-      if (!user?._id) return;
+      if (!authState.user?._id) return;
 
       dispatch({ type: "SET_LOADING", payload: true });
       try {
-        const res = await axios.get(`/api/employee/user/${user._id}`);
-        dispatch({ type: "SET_EMPLOYEES", payload: [res.data] });
+        // Map frontend user ID to backend email
+        const userMapping: { [key: string]: string } = {
+          'admin-user': 'admin@greyhr.com',
+          'hr-user': 'hr@greyhr.com',
+          'employee-user': 'employee@greyhr.com',
+          'jane-user': 'jane.smith@greyhr.com',
+          'mike-user': 'mike.johnson@greyhr.com'
+        };
+
+        const email = userMapping[authState.user._id];
+        if (!email) {
+          console.error('Unknown user ID:', authState.user._id);
+          return;
+        }
+
+        const res = await axios.get(`http://localhost:3000/api/employee/user/${email}`);
+        if (res.data.success) {
+          dispatch({ type: "SET_EMPLOYEES", payload: [res.data.employee] });
+        }
       } catch (error) {
         console.error("Failed to fetch employee:", error);
-        toast.error("Failed to fetch employee data");
+        // Don't show error toast in demo mode
+        // toast.error("Failed to fetch employee data");
       } finally {
         dispatch({ type: "SET_LOADING", payload: false });
       }
     };
 
     fetchEmployeeByUserId();
-  }, [user]);
+  }, [authState.user]);
 
   const updateEmployee = async (employee: Employee) => {
     try {
-      const res = await axios.put(`/api/employee/${employee._id}`, employee);
-      dispatch({ type: "UPDATE_EMPLOYEE", payload: res.data });
-      toast.success("Employee updated successfully!");
+      const res = await axios.put(`http://localhost:3000/api/employee/${employee._id}`, employee);
+      if (res.data.success) {
+        dispatch({ type: "UPDATE_EMPLOYEE", payload: res.data.employee });
+        toast.success("Employee updated successfully!");
+      }
     } catch (error) {
       toast.error("Failed to update employee!");
       console.error("Update error:", error);

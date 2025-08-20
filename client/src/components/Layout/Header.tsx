@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Menu, Bell, LogOut, User, ChevronDown } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNotification } from '../../contexts/NotificationContext';
+import UserSwitcher from '../UserSwitcher/UserSwitcher';
 import { format } from 'date-fns';
 
 interface HeaderProps {
@@ -30,6 +31,19 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const getRoleColor = (role: string) => {
+    switch (role) {
+      case 'admin':
+        return 'bg-red-100 text-red-800';
+      case 'hr':
+        return 'bg-blue-100 text-blue-800';
+      case 'employee':
+        return 'bg-green-100 text-green-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="flex items-center justify-between px-6 py-4">
@@ -40,12 +54,23 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
           >
             <Menu className="h-6 w-6" />
           </button>
-          <h1 className="ml-4 text-2xl font-semibold text-gray-900">
-            Welcome back, {authState.user?.name}!
-          </h1>
+          <div className="ml-4">
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Welcome back, {authState.user?.name}!
+            </h1>
+            <div className="flex items-center space-x-2 mt-1">
+              <span className={`px-2 py-1 text-xs font-medium rounded-full ${getRoleColor(authState.user?.role || '')}`}>
+                {authState.user?.role?.toUpperCase()}
+              </span>
+              <span className="text-sm text-gray-600">• {authState.user?.department}</span>
+            </div>
+          </div>
         </div>
 
         <div className="flex items-center space-x-4">
+          {/* User Switcher - Prominently displayed */}
+          <UserSwitcher />
+
           {/* Notifications */}
           <div className="relative" ref={notificationRef}>
             <button
@@ -140,7 +165,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                     className="w-full flex items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md"
                   >
                     <LogOut className="h-4 w-4 mr-2" />
-                    Logout
+                    Reset to Admin
                   </button>
                 </div>
               </div>

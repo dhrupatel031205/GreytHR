@@ -131,7 +131,6 @@ const employeeSchema = new mongoose_1.Schema({
 });
 // Index for efficient queries
 employeeSchema.index({ userId: 1 });
-employeeSchema.index({ email: 1 });
 employeeSchema.index({ department: 1 });
 employeeSchema.index({ status: 1 });
 exports.default = mongoose_1.default.model('Employee', employeeSchema);
